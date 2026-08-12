@@ -12,42 +12,120 @@
             --bg: #ffeaa7;
             --text: #2d3436;
         }
-        body { 
+        * { box-sizing: border-box; }
+        html, body { 
+            height: 100vh; 
+            margin: 0; 
+            padding: 10px; 
+            overflow: hidden; /* Lock screen so scrolling is never needed */
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; 
             background-color: var(--bg); 
             color: var(--text); 
-            margin: 0; 
-            padding: 20px;
             background-image: radial-gradient(#fab1a0 1px, transparent 1px);
-            background-size: 30px 30px;
+            background-size: 25px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .container { max-width: 1000px; margin: auto; }
-        header { text-align: center; margin-bottom: 40px; padding: 20px; background: white; border-radius: 20px; border: 5px solid var(--primary); box-shadow: 10px 10px 0px rgba(0,0,0,0.1); }
-        h1 { color: var(--primary); font-size: 3em; margin: 0; text-shadow: 2px 2px 0px white; }
-        .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
+        .container { 
+            max-width: 1100px; 
+            width: 100%;
+            margin: auto; 
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-evenly;
+        }
+        header { 
+            text-align: center; 
+            padding: 10px; 
+            background: white; 
+            border-radius: 15px; 
+            border: 4px solid var(--primary); 
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.1); 
+        }
+        h1 { color: var(--primary); font-size: 2.2em; margin: 0; text-shadow: 1px 1px 0px white; }
+        header p { margin: 5px 0 0 0; font-size: 0.95em; }
+        
+        .resource-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 15px; 
+        }
         .card { 
             background: white; 
-            border: 4px solid var(--secondary); 
-            border-radius: 20px; 
-            padding: 20px; 
-            box-shadow: 8px 8px 0px rgba(0,0,0,0.1); 
+            border: 3px solid var(--secondary); 
+            border-radius: 15px; 
+            padding: 12px 15px; 
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.1); 
             cursor: pointer; 
-            transition: transform 0.2s;
+            transition: transform 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .card:hover { transform: scale(1.05); }
-        .card h3 { margin-top: 0; color: var(--primary); font-size: 1.4em; }
-        .details { display: none; margin-top: 15px; border-top: 3px dashed var(--secondary); padding-top: 10px; }
-        .details p { font-size: 1.1em; color: #636e72; }
+        .card:hover { transform: scale(1.02); }
+        
+        .card-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+        }
+        .icon { 
+            font-size: 1.8em; 
+            background: #f1f2f6; 
+            padding: 8px; 
+            border-radius: 12px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 45px;
+            min-height: 45px;
+        }
+        .card h3 { margin: 0; color: var(--primary); font-size: 1.15em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .arrow { font-size: 1.2em; color: var(--secondary); font-weight: bold; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: white;
+            border: 5px solid var(--primary);
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+        }
+        .modal h2 { color: var(--primary); margin-top: 0; font-size: 1.8em; }
+        .modal p { font-size: 1.1em; color: #636e72; margin-bottom: 20px; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
         .btn-link { 
-            display: inline-block; 
             background: var(--accent); 
             color: white; 
             padding: 10px 20px; 
             border-radius: 50px; 
             text-decoration: none; 
             font-weight: bold; 
-            margin-top: 10px;
             border: 2px solid white;
+            cursor: pointer;
+        }
+        .btn-close {
+            background: #b2bec3;
+            color: white;
+            padding: 10px 20px; 
+            border-radius: 50px; 
+            border: 2px solid white;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -55,35 +133,64 @@
     <div class="container">
         <header>
             <h1>🌟 G2 Teacher Magic Hub 🌟</h1>
-            <p>Grab your resources and let the fun begin!</p>
+            <p>Click any card for a quick look or to launch!</p>
         </header>
         <div class="resource-grid" id="resource-container"></div>
     </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modalContent"></div>
+    </div>
+
     <script>
         const resources = [
-            { title: "Storyline Online", desc: "Award-winning books read by actors.", link: "https://storylineonline.net/" },
-            { title: "Vooks", desc: "Animated storybooks that bring tales to life.", link: "https://www.vooks.com/" },
-            { title: "KidLit TV", desc: "Read-out-louds and author fun.", link: "https://www.kidlit.tv/category/read-out-loud/" },
-            { title: "Storytime from Space", desc: "Out-of-this-world reading!", link: "https://storytimefromspace.com/" },
-            { title: "Julie's Library", desc: "Julie Andrews reads your favorite books.", link: "https://www.julieslibraryshow.org/" },
-            { title: "Cosmic Kids", desc: "Yoga and movement for busy bodies.", link: "https://cosmickids.com/" },
-            { title: "Gotham Reads", desc: "Amazing stories and read-alouds.", link: "https://www.youtube.com/channel/UCvdOFUzQd9XhmfCwnQ5mXlQ/videos" },
-            { title: "BOOKENDS", desc: "Reading with Julia Cook.", link: "https://www.youtube.com/playlist?list=PLdKJzzzGGdzEwJjMVtUZEX2ZsLNwKCctg" },
-            { title: "SplashLearn", desc: "Math and English games for G2.", link: "https://www.splashlearn.com/signin#/" },
-            { title: "ICRT News For Kids", desc: "Educational news tailored for kids.", link: "https://www.icrt.com.tw/news_lunchbox.php?mlevel1=7&mlevel2=96" }
+            { title: "Storyline Online", icon: "📖", desc: "Award-winning children's literacy website with videos of books read aloud by famous actors.", link: "https://storylineonline.net/" },
+            { title: "Vooks", icon: "✨", desc: "A kid-safe streaming library of animated storybooks that bring tales vividly to life.", link: "https://www.vooks.com/" },
+            { title: "KidLit TV", icon: "🎨", desc: "Read-out-loud videos, author interviews, and creative activities for young readers.", link: "https://www.kidlit.tv/category/read-out-loud/" },
+            { title: "Storytime from Space", icon: "🚀", desc: "Astronauts reading inspiring children's books directly from the International Space Station!", link: "https://storytimefromspace.com/" },
+            { title: "Julie's Library", icon: "📚", desc: "Julie Andrews and her daughter share story time magic through wonderful book readings.", link: "https://www.julieslibraryshow.org/" },
+            { title: "Cosmic Kids", icon: "🧘", desc: "Fun, engaging yoga, mindfulness, and relaxation adventures designed specifically for kids.", link: "https://cosmickids.com/" },
+            { title: "Gotham Reads", icon: "🎬", desc: "Engaging video channel packed with fantastic stories and expressive read-alouds.", link: "https://www.youtube.com/channel/UCvdOFUzQd9XhmfCwnQ5mXlQ/videos" },
+            { title: "BOOKENDS", icon: "🧸", desc: "Social-emotional learning and reading with beloved author Julia Cook.", link: "https://www.youtube.com/playlist?list=PLdKJzzzGGdzEwJjMVtUZEX2ZsLNwKCctg" },
+            { title: "SplashLearn", icon: "🔢", desc: "Interactive math and English games tailored precisely for Grade 2 learners.", link: "https://www.splashlearn.com/signin#/" },
+            { title: "ICRT News For Kids", icon: "🌍", desc: "Engaging educational news and current events tailored and simplified for kids.", link: "https://www.icrt.com.tw/news_lunchbox.php?mlevel1=7&mlevel2=96" }
         ];
 
         const container = document.getElementById('resource-container');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalBox = document.getElementById('modalContent');
+
         resources.forEach(r => {
             const card = document.createElement('div');
             card.className = 'card';
-            card.innerHTML = `<h3>${r.title}</h3><div class="details"><p>${r.desc}</p><a href="${r.link}" class="btn-link" target="_blank">Go to Site!</a></div>`;
+            card.innerHTML = `
+                <div class="card-left">
+                    <div class="icon">${r.icon}</div>
+                    <h3>${r.title}</h3>
+                </div>
+                <div class="arrow">➔</div>
+            `;
             card.onclick = () => {
-                const det = card.querySelector('.details');
-                det.style.display = det.style.display === 'block' ? 'none' : 'block';
+                modalBox.innerHTML = `
+                    <h2>${r.icon} ${r.title}</h2>
+                    <p>${r.desc}</p>
+                    <div class="modal-buttons">
+                        <a href="${r.link}" class="btn-link" target="_blank">Launch Site 🚀</a>
+                        <button class="btn-close" onclick="closeModal()">Close</button>
+                    </div>
+                `;
+                modalOverlay.style.display = 'flex';
             };
             container.appendChild(card);
         });
+
+        function closeModal() {
+            modalOverlay.style.display = 'none';
+        }
+
+        modalOverlay.onclick = (e) => {
+            if (e.target === modalOverlay) closeModal();
+        };
     </script>
 </body>
 </html>
