@@ -6,11 +6,11 @@
     <title>Grade 2 Teacher Resource Hub</title>
     <style>
         :root {
-            --primary: #6c5ce7;
-            --secondary: #00cec9;
-            --accent: #fd79a8;
-            --bg: #ffeaa7;
-            --text: #2d3436;
+            --primary: #4a69bd;
+            --secondary: #0984e3;
+            --accent: #3742fa;
+            --bg: #e3f2fd;
+            --text: #2f3640;
         }
         * { box-sizing: border-box; }
         html, body { 
@@ -21,7 +21,7 @@
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; 
             background-color: var(--bg); 
             color: var(--text); 
-            background-image: radial-gradient(#fab1a0 1px, transparent 1px);
+            background-image: radial-gradient(#74b9ff 1px, transparent 1px);
             background-size: 25px 25px;
             display: flex;
             flex-direction: column;
@@ -38,20 +38,47 @@
         }
         header { 
             text-align: center; 
-            padding: 8px; 
+            padding: 6px; 
             background: white; 
             border-radius: 15px; 
             border: 4px solid var(--primary); 
             box-shadow: 4px 4px 0px rgba(0,0,0,0.1); 
         }
-        h1 { color: var(--primary); font-size: 1.9em; margin: 0; text-shadow: 1px 1px 0px white; }
-        header p { margin: 3px 0 0 0; font-size: 0.9em; }
-        
+        h1 { color: var(--primary); font-size: 1.7em; margin: 0; text-shadow: 1px 1px 0px white; }
+        header p { margin: 2px 0 0 0; font-size: 0.85em; }
+
+        /* Category Tabs */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 5px 0;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: white;
+            border: 3px solid var(--primary);
+            color: var(--primary);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+            font-family: inherit;
+        }
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
         .resource-grid { 
             display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr); 
             gap: 10px; 
+            min-height: 250px;
         }
         .card { 
             background: white; 
@@ -74,18 +101,18 @@
             overflow: hidden;
         }
         .icon { 
-            font-size: 1.4em; 
+            font-size: 1.3em; 
             background: #f1f2f6; 
-            padding: 6px; 
+            padding: 5px; 
             border-radius: 10px; 
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 38px;
-            min-height: 38px;
+            min-width: 35px;
+            min-height: 35px;
         }
-        .card h3 { margin: 0; color: var(--primary); font-size: 1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .arrow { font-size: 1em; color: var(--secondary); font-weight: bold; }
+        .card h3 { margin: 0; color: var(--primary); font-size: 0.95em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .arrow { font-size: 0.9em; color: var(--secondary); font-weight: bold; }
 
         .modal-overlay {
             display: none;
@@ -108,27 +135,38 @@
         }
         .modal h2 { color: var(--primary); margin-top: 0; font-size: 1.6em; }
         .modal p { font-size: 1em; color: #636e72; margin-bottom: 15px; }
-        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         .btn-link { 
             background: var(--accent); 
             color: white; 
-            padding: 8px 18px; 
+            padding: 8px 16px; 
             border-radius: 50px; 
             text-decoration: none; 
             font-weight: bold; 
             border: 2px solid white;
             cursor: pointer;
-            font-size: 0.95em;
+            font-size: 0.9em;
+        }
+        .btn-download {
+            background: #00b894;
+            color: white;
+            padding: 8px 16px; 
+            border-radius: 50px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            border: 2px solid white;
+            cursor: pointer;
+            font-size: 0.9em;
         }
         .btn-close {
             background: #b2bec3;
             color: white;
-            padding: 8px 18px; 
+            padding: 8px 16px; 
             border-radius: 50px; 
             border: 2px solid white;
             font-weight: bold;
             cursor: pointer;
-            font-size: 0.95em;
+            font-size: 0.9em;
         }
     </style>
 </head>
@@ -136,8 +174,16 @@
     <div class="container">
         <header>
             <h1>🌟 G2 Teacher Magic Hub 🌟</h1>
-            <p>Click any card for a quick look or to launch!</p>
+            <p>Select a category below to explore resources!</p>
         </header>
+
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('study')">📚 Study Hall &amp; EC</button>
+            <button class="tab-btn" onclick="switchTab('textbooks')">📖 Digital Textbooks</button>
+            <button class="tab-btn" onclick="switchTab('coursepacks')">📑 Course Packs</button>
+            <button class="tab-btn" onclick="switchTab('practice')">🎮 Practice &amp; Games</button>
+        </div>
+
         <div class="resource-grid" id="resource-container"></div>
     </div>
 
@@ -146,47 +192,74 @@
     </div>
 
     <script>
-        const resources = [
-            { title: "Storyline Online", icon: "📖", desc: "Award-winning children's literacy website with videos of books read aloud by famous actors.", link: "https://storylineonline.net/" },
-            { title: "Vooks", icon: "✨", desc: "A kid-safe streaming library of animated storybooks that bring tales vividly to life.", link: "https://www.vooks.com/" },
-            { title: "KidLit TV", icon: "🎨", desc: "Read-out-loud videos, author interviews, and creative activities for young readers.", link: "https://www.kidlit.tv/category/read-out-loud/" },
-            { title: "Storytime from Space", icon: "🚀", desc: "Astronauts reading inspiring children's books directly from the International Space Station!", link: "https://storytimefromspace.com/" },
-            { title: "Julie's Library", icon: "📚", desc: "Julie Andrews and her daughter share story time magic through wonderful book readings.", link: "https://www.julieslibraryshow.org/" },
-            { title: "Cosmic Kids", icon: "🧘", desc: "Fun, engaging yoga, mindfulness, and relaxation adventures designed specifically for kids.", link: "https://cosmickids.com/" },
-            { title: "Gotham Reads", icon: "🎬", desc: "Engaging video channel packed with fantastic stories and expressive read-alouds.", link: "https://www.youtube.com/channel/UCvdOFUzQd9XhmfCwnQ5mXlQ/videos" },
-            { title: "Epic!", icon: "📚", desc: "The digital reading platform filled with thousands of books, audiobooks, and learning videos for kids.", link: "https://www.getepic.com/sign-in" },
-            { title: "SplashLearn", icon: "🔢", desc: "Interactive math and English games tailored precisely for Grade 2 learners.", link: "https://www.splashlearn.com/signin#/" },
-            { title: "ICRT News For Kids", icon: "🌍", desc: "Engaging educational news and current events tailored and simplified for kids.", link: "https://www.icrt.com.tw/news_lunchbox.php?mlevel1=7&mlevel2=96" },
-            { title: "Highlights Teacher", icon: "✏️", desc: "Free screen-free activities, crafts, science experiments, and printable Hidden Pictures puzzles.", link: "https://shop.highlights.com/foreducators#three" }
-        ];
+        const categories = {
+            study: [
+                { title: "Storyline Online", icon: "📖", desc: "Award-winning children's literacy website with videos of books read aloud by famous actors.", link: "https://storylineonline.net/" },
+                { title: "Vooks", icon: "✨", desc: "A kid-safe streaming library of animated storybooks that bring tales vividly to life.", link: "https://www.vooks.com/" },
+                { title: "KidLit TV", icon: "🎨", desc: "Read-out-loud videos, author interviews, and creative activities for young readers.", link: "https://www.kidlit.tv/category/read-out-loud/" },
+                { title: "Storytime from Space", icon: "🚀", desc: "Astronauts reading inspiring children's books directly from the International Space Station!", link: "https://storytimefromspace.com/" },
+                { title: "Julie's Library", icon: "📚", desc: "Julie Andrews and her daughter share story time magic through wonderful book readings.", link: "https://www.julieslibraryshow.org/" },
+                { title: "Cosmic Kids", icon: "🧘", desc: "Fun, engaging yoga, mindfulness, and relaxation adventures designed specifically for kids.", link: "https://cosmickids.com/" },
+                { title: "Gotham Reads", icon: "🎬", desc: "Engaging video channel packed with fantastic stories and expressive read-alouds.", link: "https://www.youtube.com/channel/UCvdOFUzQd9XhmfCwnQ5mXlQ/videos" },
+                { title: "ICRT News For Kids", icon: "🌍", desc: "Engaging educational news and current events tailored and simplified for kids.", link: "https://www.icrt.com.tw/news_lunchbox.php?mlevel1=7&mlevel2=96" },
+                { title: "Highlights Teacher", icon: "✏️", desc: "Free screen-free activities, crafts, science experiments, and printable Hidden Pictures puzzles.", link: "https://shop.highlights.com/foreducators#three" }
+            ],
+            textbooks: [
+                { title: "HMH Ed", icon: "📘", desc: "HMH Ed digital learning platform and login for core curriculum programs.", link: "https://www.hmhco.com/ui/login/?connection=88678707" },
+                { title: "Everybody Up", icon: "📚", desc: "Oxford Learner's Bookshelf digital access for the Everybody Up series.", link: "https://www.oxfordlearnersbookshelf.com/" },
+                { title: "Primary Math & Science", icon: "📐", desc: "MC EduHub learning management system login for primary mathematics and science.", link: "https://www.mceduhub.com/Lead/Login/lms_login.aspx" }
+            ],
+            coursepacks: [
+                { title: "Term 1 Course Pack", icon: "📑", desc: "Complete Grade 2 course pack materials for Term 1. Download a clean copy to write on locally!", link: "#", download: "#" },
+                { title: "Term 2 Course Pack", icon: "📑", desc: "Complete Grade 2 course pack materials for Term 2. Download a clean copy to write on locally!", link: "#", download: "#" }
+            ],
+            practice: [
+                { title: "Epic!", icon: "📚", desc: "The digital reading platform filled with thousands of books, audiobooks, and learning videos for kids.", link: "https://www.getepic.com/sign-in" },
+                { title: "SplashLearn", icon: "🔢", desc: "Interactive math and English games tailored precisely for Grade 2 learners.", link: "https://www.splashlearn.com/signin#/" },
+                { title: "JeopardyLabs", icon: "🎯", desc: "Create or project custom jeopardy-style smartboard review games for whole-class play.", link: "https://jeopardylabs.com/" },
+                { title: "Baamboozle", icon: "🎲", desc: "Fun, interactive smartboard review games and team activities for whole-class engagement.", link: "https://www.baamboozle.com/" },
+                { title: "Wordwall", icon: "🧩", desc: "Versatile interactive smartboard teaching templates, spinning wheels, and matching games.", link: "https://wordwall.net/" }
+            ]
+        };
 
         const container = document.getElementById('resource-container');
         const modalOverlay = document.getElementById('modalOverlay');
         const modalBox = document.getElementById('modalContent');
 
-        resources.forEach(r => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-left">
-                    <div class="icon">${r.icon}</div>
-                    <h3>${r.title}</h3>
-                </div>
-                <div class="arrow">➔</div>
-            `;
-            card.onclick = () => {
-                modalBox.innerHTML = `
-                    <h2>${r.icon} ${r.title}</h2>
-                    <p>${r.desc}</p>
-                    <div class="modal-buttons">
-                        <a href="${r.link}" class="btn-link" target="_blank">Launch Site 🚀</a>
-                        <button class="btn-close" onclick="closeModal()">Close</button>
+        function switchTab(catKey) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            container.innerHTML = '';
+            categories[catKey].forEach(r => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-left">
+                        <div class="icon">${r.icon}</div>
+                        <h3>${r.title}</h3>
                     </div>
+                    <div class="arrow">➔</div>
                 `;
-                modalOverlay.style.display = 'flex';
-            };
-            container.appendChild(card);
-        });
+                card.onclick = () => {
+                    let buttonsHTML = `<a href="${r.link}" class="btn-link" target="_blank">Open / View 👁️</a>`;
+                    if (r.download) {
+                        buttonsHTML += `<a href="${r.download}" class="btn-download" download>Download 💾</a>`;
+                    }
+                    buttonsHTML += `<button class="btn-close" onclick="closeModal()">Close</button>`;
+
+                    modalBox.innerHTML = `
+                        <h2>${r.icon} ${r.title}</h2>
+                        <p>${r.desc}</p>
+                        <div class="modal-buttons">${buttonsHTML}</div>
+                    `;
+                    modalOverlay.style.display = 'flex';
+                };
+                container.appendChild(card);
+            });
+        }
+
+        switchTab('study');
 
         function closeModal() {
             modalOverlay.style.display = 'none';
