@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 2 Teacher Resource Hub</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f39c12;
+            --accent: #27ae60;
+            --bg: #f8f9fa;
+            --text: #333;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        header { text-align: center; margin-bottom: 40px; }
+        .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { margin-top: 0; color: var(--primary); }
+        .details { display: none; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
+        .details p { font-size: 0.9em; color: #666; }
+        .btn-link { display: inline-block; background: var(--accent); color: white; padding: 8px 16px; border-radius: 5px; text-decoration: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Grade 2 Resource Hub</h1>
+            <p>Your go-to portal for classroom activities</p>
+        </header>
+        <div class="resource-grid" id="resource-container">
+            <!-- Items will be injected here -->
+        </div>
+    </div>
+    <script>
+        const resources = [
+            { title: "Storyline Online", desc: "Award-winning children's literacy website with videos of books read by actors.", link: "https://storylineonline.net/" },
+            { title: "Vooks", desc: "Animated storybooks for kids that bring stories to life.", link: "https://www.vooks.com/" },
+            { title: "KidLit TV", desc: "Read out loud videos and author interviews.", link: "https://www.kidlit.tv/category/read-out-loud/" },
+            { title: "Storytime from Space", desc: "Astronauts reading stories from the International Space Station.", link: "https://storytimefromspace.com/" },
+            { title: "Julie's Library", desc: "Julie Andrews reads children's books.", link: "https://www.julieslibraryshow.org/" },
+            { title: "Cosmic Kids", desc: "Yoga, mindfulness and relaxation for kids.", link: "https://cosmickids.com/" }
+        ];
+
+        const container = document.getElementById('resource-container');
+        resources.forEach(r => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<h3>${r.title}</h3><div class="details"><p>${r.desc}</p><a href="${r.link}" class="btn-link" target="_blank">Visit Site</a></div>`;
+            card.onclick = () => {
+                const det = card.querySelector('.details');
+                det.style.display = det.style.display === 'block' ? 'none' : 'block';
+            };
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>
